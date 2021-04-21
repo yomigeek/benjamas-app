@@ -1,10 +1,10 @@
 import React from "react";
-import {SubHeaderBox, SubHeaderTitle} from "./styles";
+import {SubHeaderBox} from "./styles";
 
-const SubHeader = ({text}) => {
+const SubHeader = () => {
   return (
     <>
-      <SubHeaderBox />
+      <SubHeaderBox id="divider"/>
     </>
   );
 };

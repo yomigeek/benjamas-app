@@ -3,18 +3,17 @@ import Header from "../Header";
 import Button from "../Button";
 import SubHeader from "../SubHeader";
 import Footer from "../Footer";
-import Cart from '../../../assets/images/cart.svg';
+import Cart from "../../../assets/images/cart.svg";
 import {NavText} from "./styles";
 
-const Container = ({titleBarText, children}) => {
+const Container = ({children}) => {
   return (
     <>
-      <Header title="Demo Streaming">
+      <Header>
         <img src={Cart} />
       </Header>
-        <SubHeader />
+      <SubHeader />
       {children}
-      <Footer />
     </>
   );
 };

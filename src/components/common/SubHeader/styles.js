@@ -5,16 +5,8 @@ export const SubHeaderBox = styled.div`
   border-top: 3px solid #E4E4E4;
   margin: 0px 6.5%;
   @media screen and (max-width: 480px) {
-    margin: 0px;
+    margin: 0 -3%;
   }    
 `;
 
-export const SubHeaderTitle = styled.div`
-  color: #fff;
-  font-weight: 500;
-  font-size: 25px;
-  display: flex;
-  width: 100%;
-  margin-left: 5%;
-`;
 
