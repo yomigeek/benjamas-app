@@ -203,7 +203,7 @@ export const ProductBox = styled.div`
   display: flex;
   margin: 50px 0px;
   div.filter {
-    width: 30%
+    width: 40%
   }
   .product-list {
     width: 60%;
@@ -211,5 +211,74 @@ export const ProductBox = styled.div`
   #divider {
     width: 65%;
     border: 0.5px solid #E4E4E4;
+  }
+
+  .list-box {
+    margin-top: 40px;
+  }
+  .container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-size: 16px;
+    margin-top: 15px;
+  }
+  
+  /* Hide the browser's default checkbox */
+  .container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 17px;
+    width: 17px;
+    background-color: #fff;
+    border 1px solid black;
+  }
+  
+  .container:hover input ~ .checkmark {
+    background-color: #fff;
+    border 1px solid black;
+  }
+  
+  .container input:checked ~ .checkmark {
+    background-color: #fff;
+    border 1px solid black;
+  }
+  
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  .container input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  .container .checkmark:after {
+    left: 6px;
+    top: 3px;
+    width: 5px;
+    height: 8px;
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
   }
 `;

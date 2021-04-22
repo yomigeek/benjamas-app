@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Photo from "../../assets/images/dog.png";
 import Pic1 from "../../assets/images/pic1.png";
 import Pic2 from "../../assets/images/pic2.png";
@@ -19,6 +19,8 @@ import BreadCrumb from "../../components/common/BreadCrumb";
 import SelectDropdown from "../../components/common/Select";
 
 const Home = ({history}) => {
+  const [checkedList, setCheckedList] = useState([]);
+  const [checkedPriceList, setCheckedPriceList] = useState([]);
   const photos = [
     {
       id: 1,
@@ -37,6 +39,63 @@ const Home = ({history}) => {
     {id: 1, text: "Price", value: "price"},
     {id: 2, text: "Alphabetically", value: "alphabetically"},
   ];
+
+  const filterOptions = [
+    {id: 1, text: "People", value: "people"},
+    {id: 2, text: "Premium", value: "premium"},
+    {id: 3, text: "Pets", value: "pets"},
+    {id: 4, text: "Food", value: "food"},
+    {id: 5, text: "Landmarks", value: "landmarks"},
+    {id: 6, text: "Cities", value: "cities"},
+    {id: 7, text: "Nature", value: "nature"},
+  ];
+
+  const filterPriceOptions = [
+    {id: 1, text: "Lower than $20", value: "lt20"},
+    {id: 2, text: "$20 - $100", value: "20to100"},
+    {id: 3, text: "$100 - $200", value: "100to200"},
+    {id: 4, text: "More than $200", value: "mt200"},
+  ];
+
+  const categoryCheckHandler = (name) => {
+    const currentList = [...checkedList];
+    if (currentList.indexOf(name) >= 0) {
+      const filteredCategory = currentList.filter((list) => list !== name);
+      setCheckedList(filteredCategory);
+    } else {
+      currentList.push(name);
+      setCheckedList(currentList);
+    }
+  };
+
+  const priceCheckHandler = (name) => {
+    const currentList = [...checkedPriceList];
+    if (currentList.indexOf(name) >= 0) {
+      const filteredCategory = currentList.filter((list) => list !== name);
+      setCheckedPriceList(filteredCategory);
+    } else {
+      currentList.push(name);
+      setCheckedPriceList(currentList);
+    }
+  };
+
+  const confirmSelectedValue = (value, filterFrom) => {
+    if (filterFrom === "category") {
+      if (checkedList.indexOf(value) >= 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    if (filterFrom === "price") {
+      if (checkedPriceList.indexOf(value) >= 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  };
+
   return (
     <>
       <Wrapper>
@@ -116,12 +175,47 @@ const Home = ({history}) => {
           <div className="filter">
             <div>
               <strong>Category</strong>
+              <div className="list-box">
+                {filterOptions.map((item, index) => {
+                  return (
+                    <label
+                      className="container"
+                      key={`category-${item.value}-${index}`}
+                    >
+                      {item.text}
+                      <input
+                        type="checkbox"
+                        onChange={() => categoryCheckHandler(item.value)}
+                        checked={confirmSelectedValue(item.value, "category")}
+                      />
+                      <span className="checkmark"></span>
+                    </label>
+                  );
+                })}
+              </div>
             </div>
             <SubHeader />
             <div>
               <strong>Price range</strong>
+              <div className="list-box">
+                {filterPriceOptions.map((item, index) => {
+                  return (
+                    <label
+                      className="container"
+                      key={`category-${item.value}-${index}`}
+                    >
+                      {item.text}
+                      <input
+                        type="checkbox"
+                        onChange={() => priceCheckHandler(item.value)}
+                        checked={confirmSelectedValue(item.value, "price")}
+                      />
+                      <span className="checkmark"></span>
+                    </label>
+                  );
+                })}
+              </div>
             </div>
-
           </div>
           <div className="product-list">g</div>
         </ProductBox>
