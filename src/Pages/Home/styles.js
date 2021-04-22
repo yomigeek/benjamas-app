@@ -203,10 +203,17 @@ export const ProductBox = styled.div`
   display: flex;
   margin: 50px 0px;
   div.filter {
-    width: 40%
+    width: 25%
   }
   .product-list {
-    width: 60%;
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+    margin-left: 100px;
+    flex-wrap: wrap;
+    // #card {
+    //   width: 30%;
+    // }
   }
   #divider {
     width: 65%;
@@ -215,9 +222,12 @@ export const ProductBox = styled.div`
 
   .list-box {
     margin-top: 40px;
+    display: flex;
+    flex-direction: column;
   }
   .container {
-    display: block;
+    display: inline-block;
+    width: fit-content;
     position: relative;
     padding-left: 35px;
     margin-bottom: 12px;

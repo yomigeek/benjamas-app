@@ -19,23 +19,11 @@ const renderComponent = (Component) => (props) => {
  */
 const AppRoute = (props) => {
   const {component: Component, ...rest} = props;
-  const {path} = props;
-
-  let titleBarText = "Titles";
-  if (path === "/series") {
-    titleBarText = "Series";
-  }
-  if (path === "/movies") {
-    titleBarText = "Movies";
-  }
-  if (path === "*") {
-    titleBarText = "none";
-  }
 
   return (
-    <Container titleBarText={titleBarText} >
+    <>
       <Route {...rest} render={renderComponent(Component)} />
-    </Container>
+    </>
   );
 };
 

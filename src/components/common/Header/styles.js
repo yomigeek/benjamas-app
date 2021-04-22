@@ -6,6 +6,18 @@ export const HeaderBox = styled.div`
   display: flex;
   padding: 20px 25px;
   cursor: pointer;
+  span {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    width: fit-content;
+    height: fit-content;
+    padding: 2px 4px;
+    position: relative;
+    bottom: -30px;
+    left: -3px;
+    font-size: 12px
+  }
 `;
 
 export const HeaderTitle = styled.div`
@@ -21,7 +33,7 @@ export const HeaderMenu = styled.div`
   display: flex;
   width: 50%;
   justify-content: flex-end;
-  * {
-    margin-right: 10%;
+   {
+    margin-left: -10%;
   }
 `;
