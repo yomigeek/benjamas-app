@@ -314,6 +314,7 @@ export const ProductBox = styled.div`
   .filter-mobile {
     display: block;
     margin-bottom: 50px;
+    z-index: 10000000;
     .list-box {
     margin-top: 20px;
     display: flex;
@@ -326,6 +327,24 @@ export const ProductBox = styled.div`
       display: flex;
       strong {
         width: 90%
+      }
+    } 
+    .buttons-wrapper {
+      display: flex;
+      margin: 20px 0px; 
+      div {
+        width: 40%;
+        text-align: center;
+       
+      }
+      .clear button {
+        background: #fff;
+        border: 1px solid black;
+        width: 90%;
+        color: #000;
+      }
+      .save button {
+        width: 90%;
       }
     }
   }

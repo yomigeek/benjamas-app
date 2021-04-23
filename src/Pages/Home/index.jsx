@@ -23,7 +23,7 @@ import Container from "../../components/common/Container";
 import Pagination from "../../components/common/Pagination";
 import products from "./data";
 
-const Home = ({history}) => {
+const Home = () => {
   const [checkedList, setCheckedList] = useState([]);
   const [checkedPriceList, setCheckedPriceList] = useState([]);
   const [cartItems, setCartItems] = useState([]);
@@ -71,7 +71,9 @@ const Home = ({history}) => {
   ];
 
   const categoryCheckHandler = (name) => {
-    setStartFiltering(true);
+    if (!mobileFilter) {
+      setStartFiltering(true);
+    }
     const currentList = [...checkedList];
     if (currentList.indexOf(name) >= 0) {
       const filteredCategory = currentList.filter((list) => list !== name);
@@ -83,7 +85,9 @@ const Home = ({history}) => {
   };
 
   const priceCheckHandler = (name) => {
-    setStartFiltering(true);
+    if (!mobileFilter) {
+      setStartFiltering(true);
+    }
     const currentList = [];
     if (checkedPriceList.indexOf(name) >= 0) {
       setCheckedPriceList([]);
@@ -169,9 +173,13 @@ const Home = ({history}) => {
   useEffect(() => {
     setEmptyCatalog(false);
     if (checkedList.length > 0 || checkedPriceList.length > 0) {
-      filterCatalog();
-    } else {
-      setStartFiltering(false);
+      if (!mobileFilter) {
+        filterCatalog();
+      }
+    } else if (checkedList.length === 0 && checkedPriceList.length === 0) {
+      if (!mobileFilter) {
+        setStartFiltering(false);
+      }
     }
   }, [checkedList, checkedPriceList]);
 
@@ -220,6 +228,12 @@ const Home = ({history}) => {
       });
     }
 
+    if (checkedList.length === 0 && checkedPriceList.length === 0) {
+      setCheckedPriceList([]);
+      setCheckedList([]);
+      setStartFiltering(false);
+    }
+
     if (checkedList.length === 0 && checkedPriceList.length > 0) {
       const findProduct = products.filter((item) => {
         if (checkedPriceList[0] === "mt20") {
@@ -255,19 +269,65 @@ const Home = ({history}) => {
       setFilteredCatalog([]);
       setEmptyCatalog(true);
     }
-    if (startFiltering && filterCatalog.length > 0) {
+    if (filterCatalog.length > 0) {
       setFilteredCatalog(filterCatalog);
     }
   };
 
   const handleMobileFilter = (type) => {
-    if(type === 'open') {
+    if (type === "open") {
       setMobileFilter(true);
     }
-    if(type === 'close') {
+    if (type === "close") {
       setMobileFilter(false);
     }
+  };
+
+  const mobileFilterAction = (type) => {
+    if (type === "start") {
+      setStartFiltering(true);
+      filterCatalog();
+    }
+
+    if (type === "clear") {
+      setCheckedPriceList([]);
+      setCheckedList([]);
+      setStartFiltering(false);
+    }
+  };
+
+  const hasWindow = typeof window !== 'undefined';
+
+  function getWindowDimensions() {
+    const width = hasWindow ? window.innerWidth : null;
+    const height = hasWindow ? window.innerHeight : null;
+    return {
+      width,
+      height,
+    };
   }
+
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+  useEffect(() => {
+    if (hasWindow) {
+      function handleResize() {
+        setWindowDimensions(getWindowDimensions());
+      }
+     
+      window.addEventListener('resize', handleResize);
+     
+      return () => window.removeEventListener('resize', handleResize);
+
+    }
+  }, [hasWindow]);
+
+  useEffect(() => {
+    if(windowDimensions?.width > 990) {
+      setMobileFilter(false);
+    }
+  }, [windowDimensions])
+
 
   return (
     <>
@@ -348,7 +408,10 @@ const Home = ({history}) => {
               </div>
             </div>
             <div className="sort-mobile">
-              <img src={SortMobile} />
+              <img
+                src={SortMobile}
+                onClick={() => handleMobileFilter("open")}
+              />
             </div>
           </NavAndSort>
           <ProductBox>
@@ -397,12 +460,19 @@ const Home = ({history}) => {
                 </div>
               </div>
             </div>
-            <div className="filter-mobile">
+            <div
+              className="filter-mobile"
+              style={{display: mobileFilter ? "block" : "none"}}
+            >
               <div>
                 <div className="header">
                   <strong>Filter</strong>
                   <div>
-                    <img src={Close} onClick={() => handleMobileFilter("close")} />
+                    <img
+                      src={Close}
+                      onClick={() => handleMobileFilter("close")}
+                      width="15px"
+                    />
                   </div>
                 </div>
 
@@ -445,6 +515,14 @@ const Home = ({history}) => {
                       </label>
                     );
                   })}
+                </div>
+              </div>
+              <div className="buttons-wrapper">
+                <div className="clear">
+                  <Button text="CLEAR" clickAction={() => mobileFilterAction('clear')} />
+                </div>
+                <div className="save">
+                  <Button text="SAVE" clickAction={() => mobileFilterAction('start')} />
                 </div>
               </div>
             </div>
