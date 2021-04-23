@@ -18,7 +18,7 @@ const Select = styled.select`
   & + span {
     position: relative;
     top: -2px;
-    right: 34px;
+    right: -5px;
     color: #344563;
   }
 `;

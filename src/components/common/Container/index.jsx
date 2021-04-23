@@ -10,12 +10,12 @@ const Container = ({cartItems, showCart, cartBoxHandler, children}) => {
   return (
     <>
       <Header>
-        <img src={Cart} onClick={() => cartBoxHandler("open")} />
+        <img src={Cart} onClick={() => cartBoxHandler("open")} alt="pic" />
         {cartItems?.length > 0 ? <span>{cartItems.length}</span> : ""}
         {showCart && (
           <CartBox>
             <div className="close">
-              <img src={Close} onClick={() => cartBoxHandler("close")} />
+              <img src={Close} onClick={() => cartBoxHandler("close")} alt="pic" />
             </div>
             {cartItems.map((item, index) => {
               return (
@@ -27,7 +27,7 @@ const Container = ({cartItems, showCart, cartBoxHandler, children}) => {
                       <div>${item.price}</div>
                     </div>
                     <div className="image">
-                      <img src={item?.image?.src} height="50px" />
+                      <img src={item?.image?.src} height="50px" alt="pic" />
                     </div>
                   </div>
                   <SubHeader id="cart-divider" />

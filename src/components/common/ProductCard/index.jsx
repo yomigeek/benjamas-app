@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {Card} from "./styles";
 import Button from "../Button";
-import {useHistory} from "react-router-dom";
 
 const ProductCard = ({
   category,
@@ -12,7 +11,6 @@ const ProductCard = ({
   addToCart,
   id,
 }) => {
-  const history = useHistory();
   const [showButton, setShowButton] = useState(false);
   const triggerHover = () => {
     setShowButton(true);
@@ -21,7 +19,7 @@ const ProductCard = ({
     setShowButton(false);
   };
   return (
-    <Card id="card" key={`product-card-${id}`}>
+    <Card id="card" >
       <span
         className="best-seller"
         style={{
@@ -35,7 +33,7 @@ const ProductCard = ({
         onMouseOut={stopHover}
         onTouchStart={triggerHover}
       >
-        <img src={imgUrl} height="270px" />
+        <img src={imgUrl} height="270px" alt="pic" />
       </div>
       <span
         className="button-holder"

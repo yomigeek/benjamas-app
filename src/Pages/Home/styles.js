@@ -157,10 +157,11 @@ export const NavAndSort = styled.div`
     display: flex;
 
     div.sort-img {
-      width: 65%;
+      width: 56%;
       text-align: right;
       position: relative;
       left: 80px;
+      cursor: pointer;
     }
     div.sort-select {
       margin-left: 5px;
@@ -194,6 +195,16 @@ export const NavAndSort = styled.div`
         top: -10px;
         cursor: pointer;
       }
+    }
+  }
+
+  @media screen and (max-width: 1100px) {
+
+    .sort-desktop div.sort-img {
+      width: 40%;
+      text-align: right;
+      position: relative;
+      left: 80px;
     }
   }
 `;

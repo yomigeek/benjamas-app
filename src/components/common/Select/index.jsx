@@ -31,7 +31,7 @@ const SelectDropdown = ({
           })}
         </Select>
         <span>
-          <img src={ArrowDown} />
+          <img src={ArrowDown} alt="pic"/>
         </span>
       </div>
     </>

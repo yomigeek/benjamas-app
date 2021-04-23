@@ -9,7 +9,7 @@ const Header = ({title, children}) => {
     <>
       <HeaderBox>
         <HeaderTitle onClick={() => history.push("/")}>
-          <img src={Logo} width="120px" />
+          <img src={Logo} width="120px" alt="logo" />
         </HeaderTitle>
         <HeaderMenu>{children}</HeaderMenu>
       </HeaderBox>

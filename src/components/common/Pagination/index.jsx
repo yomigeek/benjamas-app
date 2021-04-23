@@ -1,7 +1,7 @@
 import React from "react";
 import LeftArrow from "../../../assets/images/left-arrow.svg";
 import RightArrow from "../../../assets/images/right-arrow.svg";
-import {Wrapper, Box} from "./styles";
+import {Wrapper} from "./styles";
 
 const Pagination = ({products, activePage, goToPage}) => {
   const rowLength = Math.ceil(products.length / 6);
@@ -12,7 +12,7 @@ const Pagination = ({products, activePage, goToPage}) => {
   return (
     <>
       <Wrapper>
-        <span>{activePage !== 1 && <img src={LeftArrow} />}</span>
+        <span>{activePage !== 1 && <img src={LeftArrow} alt="pic" />}</span>
         {rowArray.map((item, index) => {
           return (
             <span
@@ -25,7 +25,7 @@ const Pagination = ({products, activePage, goToPage}) => {
           );
         })}
         <span>
-          {activePage !== rowLength && !!products?.length && <img src={RightArrow} />}
+          {activePage !== rowLength && !!products?.length && <img src={RightArrow} alt="pic" />}
         </span>
       </Wrapper>
     </>

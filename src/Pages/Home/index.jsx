@@ -22,7 +22,6 @@ import SelectDropdown from "../../components/common/Select";
 import ProductCard from "../../components/common/ProductCard";
 import Container from "../../components/common/Container";
 import Pagination from "../../components/common/Pagination";
-// import products from "./data";
 
 const Home = () => {
   const [checkedList, setCheckedList] = useState([]);
@@ -38,6 +37,8 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [sortBy, setSortBy] = useState("price");
+  const [sortLevel, setSortLevel] = useState("asc");
 
   useEffect(() => {
     setLoading(true);
@@ -47,8 +48,7 @@ const Home = () => {
           "https://yomigeek.github.io/product-list/products.json"
       ) // JSON File Path
       .then((response) => {
-        console.log(response);
-        setProducts(response.data.entries)
+        setProducts(response.data.entries);
         setLoading(false);
       })
       .catch(function () {
@@ -56,8 +56,6 @@ const Home = () => {
         setError(true);
       });
   }, []);
-
-  console.log(products, 'pppp')
 
   const photos = [
     {
@@ -165,7 +163,6 @@ const Home = () => {
     setProductsInView([]);
 
     if (!startFiltering) {
-      console.log(products, 'mm')
       let rowArray = [];
       const start = (activePage - 1) * 6;
       const end = start + 5;
@@ -194,7 +191,8 @@ const Home = () => {
     checkedList.length,
     checkedPriceList.length,
     filteredCatalog,
-    products
+    products,
+    sortLevel,
   ]);
 
   useEffect(() => {
@@ -208,7 +206,7 @@ const Home = () => {
         setStartFiltering(false);
       }
     }
-  }, [checkedList, checkedPriceList]);
+  }, [checkedList, checkedPriceList, mobileFilter]);
 
   const goToPage = (pageId) => {
     setActivePage(pageId);
@@ -326,7 +324,7 @@ const Home = () => {
     }
   };
 
-  const hasWindow = typeof window !== 'undefined';
+  const hasWindow = typeof window !== "undefined";
 
   function getWindowDimensions() {
     const width = hasWindow ? window.innerWidth : null;
@@ -337,26 +335,72 @@ const Home = () => {
     };
   }
 
-  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
 
   useEffect(() => {
     if (hasWindow) {
       function handleResize() {
         setWindowDimensions(getWindowDimensions());
       }
-     
-      window.addEventListener('resize', handleResize);
-     
-      return () => window.removeEventListener('resize', handleResize);
 
+      window.addEventListener("resize", handleResize);
+
+      return () => window.removeEventListener("resize", handleResize);
     }
   }, [hasWindow]);
 
   useEffect(() => {
-    if(windowDimensions?.width > 990) {
+    if (windowDimensions?.width > 990) {
       setMobileFilter(false);
     }
-  }, [windowDimensions])
+  }, [windowDimensions]);
+
+  const updateHandler = (e) => {
+    e.persist();
+    setSortBy(e.target.value);
+  };
+
+  const sortList = (level) => {
+    if (sortBy === "price") {
+      setProducts(
+        products.sort(function (firstValue, secondValue) {
+          const x = firstValue.price;
+          const y = secondValue.price;
+          if (level === "asc") {
+            return x < y ? -1 : x > y ? 1 : 0;
+          } else {
+            return x > y ? -1 : x < y ? 1 : 0;
+          }
+        })
+      );
+    }
+    if (sortBy === "alphabetically") {
+      setProducts(
+        products.sort(function (firstValue, secondValue) {
+          const x = firstValue.name.toLowerCase();
+          const y = secondValue.name.toLowerCase();
+          if (level === "asc") {
+            return x < y ? -1 : x > y ? 1 : 0;
+          } else {
+            return x > y ? -1 : x < y ? 1 : 0;
+          }
+        })
+      );
+    }
+  };
+
+  const setSortingBy = () => {
+    if (sortLevel === "asc") {
+      sortList("asc");
+      setSortLevel("desc");
+    }
+    if (sortLevel === "desc") {
+      sortList("desc");
+      setSortLevel("asc");
+    }
+  };
 
 
   return (
@@ -376,7 +420,11 @@ const Home = () => {
           </TitleWrapper>
           <MainPhotoHolder>
             <div>
-              <img src={Photo} width="100%" />
+              <img
+                src="https://res.cloudinary.com/kugoo/image/upload/v1619124424/bejamas/dog.png"
+                width="100%"
+                alt="pic"
+              />
             </div>
             <div className="flag">Photo of the day</div>
             <div className="button-holder">
@@ -411,7 +459,7 @@ const Home = () => {
                     <img
                       src={photo.url}
                       key={`photo-detail-${photo.id}`}
-                      alt="product-photo"
+                      alt="product"
                     />
                   );
                 })}
@@ -431,16 +479,21 @@ const Home = () => {
             </div>
             <div className="sort-desktop">
               <div className="sort-img">
-                <img src={SortArrow} /> Sort By
+                <img src={SortArrow} alt="pic" onClick={setSortingBy} /> Sort By
               </div>
               <div className="sort-select">
-                <SelectDropdown options={sortOptions} />
+                <SelectDropdown
+                  options={sortOptions}
+                  updateHandler={updateHandler}
+                  value={sortBy}
+                />
               </div>
             </div>
             <div className="sort-mobile">
               <img
                 src={SortMobile}
                 onClick={() => handleMobileFilter("open")}
+                alt="pic"
               />
             </div>
           </NavAndSort>
@@ -502,6 +555,7 @@ const Home = () => {
                       src={Close}
                       onClick={() => handleMobileFilter("close")}
                       width="15px"
+                      alt="pic"
                     />
                   </div>
                 </div>
@@ -549,10 +603,16 @@ const Home = () => {
               </div>
               <div className="buttons-wrapper">
                 <div className="clear">
-                  <Button text="CLEAR" clickAction={() => mobileFilterAction('clear')} />
+                  <Button
+                    text="CLEAR"
+                    clickAction={() => mobileFilterAction("clear")}
+                  />
                 </div>
                 <div className="save">
-                  <Button text="SAVE" clickAction={() => mobileFilterAction('start')} />
+                  <Button
+                    text="SAVE"
+                    clickAction={() => mobileFilterAction("start")}
+                  />
                 </div>
               </div>
             </div>
@@ -571,6 +631,7 @@ const Home = () => {
                       category={item.category}
                       price={item.price}
                       id={item.id}
+                      key={`card-product-${item.id}`}
                     />
                   );
                 })}
