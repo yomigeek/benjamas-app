@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
-import Photo from "../../assets/images/dog.png";
 import Pic1 from "../../assets/images/pic1.png";
 import Pic2 from "../../assets/images/pic2.png";
 import Pic3 from "../../assets/images/pic3.png";
@@ -423,6 +422,7 @@ const Home = () => {
               <img
                 src="https://res.cloudinary.com/kugoo/image/upload/v1619124424/bejamas/dog.png"
                 width="100%"
+                height="100%"
                 alt="pic"
               />
             </div>
