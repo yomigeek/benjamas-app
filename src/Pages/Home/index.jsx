@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import axios from "axios";
 import Photo from "../../assets/images/dog.png";
 import Pic1 from "../../assets/images/pic1.png";
 import Pic2 from "../../assets/images/pic2.png";
@@ -21,7 +22,7 @@ import SelectDropdown from "../../components/common/Select";
 import ProductCard from "../../components/common/ProductCard";
 import Container from "../../components/common/Container";
 import Pagination from "../../components/common/Pagination";
-import products from "./data";
+// import products from "./data";
 
 const Home = () => {
   const [checkedList, setCheckedList] = useState([]);
@@ -34,6 +35,30 @@ const Home = () => {
   const [emptyCatalog, setEmptyCatalog] = useState(false);
   const [filteredCatalog, setFilteredCatalog] = useState([]);
   const [mobileFilter, setMobileFilter] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get(
+        process.env.REACT_APP_JSON_FILE_URL ||
+          "https://yomigeek.github.io/product-list/products.json"
+      ) // JSON File Path
+      .then((response) => {
+        console.log(response);
+        setProducts(response.data.entries)
+        setLoading(false);
+      })
+      .catch(function () {
+        setLoading(false);
+        setError(true);
+      });
+  }, []);
+
+  console.log(products, 'pppp')
+
   const photos = [
     {
       id: 1,
@@ -140,6 +165,7 @@ const Home = () => {
     setProductsInView([]);
 
     if (!startFiltering) {
+      console.log(products, 'mm')
       let rowArray = [];
       const start = (activePage - 1) * 6;
       const end = start + 5;
@@ -168,6 +194,7 @@ const Home = () => {
     checkedList.length,
     checkedPriceList.length,
     filteredCatalog,
+    products
   ]);
 
   useEffect(() => {
@@ -247,6 +274,9 @@ const Home = () => {
         }
         if (checkedPriceList[0] === "100to200") {
           return parseInt(item.price) === 100 && parseInt(item.price) < 201;
+        }
+        if (checkedPriceList[0] === "mt200") {
+          return parseInt(item.price) > 200;
         }
       });
 
@@ -528,6 +558,8 @@ const Home = () => {
             </div>
             <div className="product-list">
               {emptyCatalog && <div>No match found!</div>}
+              {loading ? <div>Loading...</div> : ""}
+              {error ? <div>Error loading catalog...check connection</div> : ""}
               <div className="catalog">
                 {productsInView.map((item, index) => {
                   return (

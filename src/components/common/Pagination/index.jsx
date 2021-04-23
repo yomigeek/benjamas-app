@@ -25,7 +25,7 @@ const Pagination = ({products, activePage, goToPage}) => {
           );
         })}
         <span>
-          {activePage !== rowLength && <img src={RightArrow} />}
+          {activePage !== rowLength && !!products?.length && <img src={RightArrow} />}
         </span>
       </Wrapper>
     </>
