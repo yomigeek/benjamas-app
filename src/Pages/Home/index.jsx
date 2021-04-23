@@ -5,6 +5,7 @@ import Pic2 from "../../assets/images/pic2.png";
 import Pic3 from "../../assets/images/pic3.png";
 import SortMobile from "../../assets/images/sort-mobile.svg";
 import SortArrow from "../../assets/images/sort-arrow.svg";
+import Close from "../../assets/images/close.svg";
 import {
   TitleWrapper,
   Wrapper,
@@ -32,6 +33,7 @@ const Home = ({history}) => {
   const [startFiltering, setStartFiltering] = useState(false);
   const [emptyCatalog, setEmptyCatalog] = useState(false);
   const [filteredCatalog, setFilteredCatalog] = useState([]);
+  const [mobileFilter, setMobileFilter] = useState(false);
   const photos = [
     {
       id: 1,
@@ -78,16 +80,15 @@ const Home = ({history}) => {
       currentList.push(name);
       setCheckedList(currentList);
     }
-    console.log(checkedList);
   };
 
   const priceCheckHandler = (name) => {
-    setCheckedPriceList([]);
+    setStartFiltering(true);
     const currentList = [];
-    if (currentList.indexOf(name) >= 0) {
-      const filteredPrice = currentList.filter((list) => list !== name);
-      setCheckedPriceList(filteredPrice);
+    if (checkedPriceList.indexOf(name) >= 0) {
+      setCheckedPriceList([]);
     } else {
+      setCheckedPriceList([]);
       currentList.push(name);
       setCheckedPriceList(currentList);
     }
@@ -132,7 +133,6 @@ const Home = ({history}) => {
   };
 
   useEffect(() => {
-    console.log('triggers')
     setProductsInView([]);
 
     if (!startFiltering) {
@@ -141,65 +141,115 @@ const Home = ({history}) => {
       const end = start + 5;
       for (let i = start; i <= end; i++) {
         if (products[i]) {
-          console.log("mmmm0");
-
           rowArray.push(products[i]);
         }
       }
       setProductsInView(rowArray);
-    } 
-    
-    if(startFiltering) {
+    }
+
+    if (startFiltering) {
       let rowArray = [];
       const start = (activePage - 1) * 6;
       const end = start + 5;
       for (let i = start; i <= end; i++) {
         if (filteredCatalog[i]) {
-          console.log("mmmm1");
           rowArray.push(filteredCatalog[i]);
         }
       }
       setProductsInView(rowArray);
-      console.log(rowArray, "ra");
     }
-    // console.log(rowArray, "ra");
-  }, [activePage, startFiltering, checkedList.length, filteredCatalog]);
+  }, [
+    activePage,
+    startFiltering,
+    checkedList.length,
+    checkedPriceList.length,
+    filteredCatalog,
+  ]);
 
   useEffect(() => {
     setEmptyCatalog(false);
-    if (checkedList.length > 0) {
+    if (checkedList.length > 0 || checkedPriceList.length > 0) {
       filterCatalog();
     } else {
       setStartFiltering(false);
     }
-  }, [checkedList]);
+  }, [checkedList, checkedPriceList]);
 
   const goToPage = (pageId) => {
     setActivePage(pageId);
   };
 
   const filterCatalog = () => {
-    console.log("m here");
-    const category = checkedList;
+    let category = checkedList;
     const allFilter = [];
     const filterCatalog = [];
-    console.log(category, 'ccgg')
-    category.forEach((cat) => {
-      const findProduct = products.filter((item) =>
-        item.category === cat
-      );
-      allFilter.push(findProduct);
-    });
-    // console.log(allFilter, 'afff')
+    if (checkedList.length > 0 && checkedPriceList.length > 0) {
+      category.forEach((cat) => {
+        const findProduct = products.filter((item) => {
+          if (checkedPriceList[0] === "mt20") {
+            return item.category === cat && parseInt(item.price) > 200;
+          }
+          if (checkedPriceList[0] === "lt20") {
+            return item.category === cat && parseInt(item.price) < 20;
+          }
+          if (checkedPriceList[0] === "20to100") {
+            return (
+              item.category === cat &&
+              parseInt(item.price) >= 20 &&
+              parseInt(item.price) < 101
+            );
+          }
+          if (checkedPriceList[0] === "100to200") {
+            return (
+              item.category === cat &&
+              parseInt(item.price) === 100 &&
+              parseInt(item.price) < 201
+            );
+          }
+        });
+        allFilter.push(findProduct);
+      });
+    }
+
+    if (checkedList.length > 0 && checkedPriceList.length === 0) {
+      category.forEach((cat) => {
+        const findProduct = products.filter((item) => {
+          return item.category === cat;
+        });
+        allFilter.push(findProduct);
+      });
+    }
+
+    if (checkedList.length === 0 && checkedPriceList.length > 0) {
+      const findProduct = products.filter((item) => {
+        if (checkedPriceList[0] === "mt20") {
+          return parseInt(item.price) > 200;
+        }
+        if (checkedPriceList[0] === "lt20") {
+          return parseInt(item.price) < 20;
+        }
+        if (checkedPriceList[0] === "20to100") {
+          return parseInt(item.price) >= 20 && parseInt(item.price) < 101;
+        }
+        if (checkedPriceList[0] === "100to200") {
+          return parseInt(item.price) === 100 && parseInt(item.price) < 201;
+        }
+      });
+
+      for (let j = 0; j <= findProduct.length - 1; j++) {
+        filterCatalog.push(findProduct[j]);
+      }
+
+      setFilteredCatalog(filterCatalog);
+    }
+
     for (let i = 0; i <= category.length - 1; i++) {
       if (allFilter[i]?.length > 0) {
-
         for (let j = 0; j <= allFilter[i].length - 1; j++) {
           filterCatalog.push(allFilter[i][j]);
         }
       }
     }
-    console.log(filterCatalog, 'mmm9')
 
     if (startFiltering && filterCatalog.length < 1) {
       setFilteredCatalog([]);
@@ -209,6 +259,16 @@ const Home = ({history}) => {
       setFilteredCatalog(filterCatalog);
     }
   };
+
+  const handleMobileFilter = (type) => {
+    if(type === 'open') {
+      setMobileFilter(true);
+    }
+    if(type === 'close') {
+      setMobileFilter(false);
+    }
+  }
+
   return (
     <>
       <Container
@@ -337,6 +397,57 @@ const Home = ({history}) => {
                 </div>
               </div>
             </div>
+            <div className="filter-mobile">
+              <div>
+                <div className="header">
+                  <strong>Filter</strong>
+                  <div>
+                    <img src={Close} onClick={() => handleMobileFilter("close")} />
+                  </div>
+                </div>
+
+                <div className="list-box">
+                  {filterOptions.map((item, index) => {
+                    return (
+                      <label
+                        className="container"
+                        key={`category-${item.value}-${index}`}
+                      >
+                        {item.text}
+                        <input
+                          type="checkbox"
+                          onChange={() => categoryCheckHandler(item.value)}
+                          checked={confirmSelectedValue(item.value, "category")}
+                        />
+                        <span className="checkmark"></span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+              <SubHeader />
+              <div>
+                <strong>Price range</strong>
+                <div className="list-box">
+                  {filterPriceOptions.map((item, index) => {
+                    return (
+                      <label
+                        className="container"
+                        key={`category-${item.value}-${index}`}
+                      >
+                        {item.text}
+                        <input
+                          type="checkbox"
+                          onChange={() => priceCheckHandler(item.value)}
+                          checked={confirmSelectedValue(item.value, "price")}
+                        />
+                        <span className="checkmark"></span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
             <div className="product-list">
               {emptyCatalog && <div>No match found!</div>}
               <div className="catalog">
@@ -357,7 +468,7 @@ const Home = ({history}) => {
               {!emptyCatalog && (
                 <div className="pagination">
                   <Pagination
-                    products={!startFiltering ? products : productsInView}
+                    products={!startFiltering ? products : filteredCatalog}
                     activePage={activePage}
                     goToPage={goToPage}
                   />

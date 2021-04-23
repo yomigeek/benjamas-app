@@ -155,7 +155,7 @@ export const NavAndSort = styled.div`
   }
   .sort-desktop {
     display: flex;
- 
+
     div.sort-img {
       width: 65%;
       text-align: right;
@@ -174,7 +174,7 @@ export const NavAndSort = styled.div`
     font-size: 15px;
     line-height: 30px;
     color: #9b9b9b;
-    {
+     {
       img {
         width: 10px;
         margin-right: 5px;
@@ -198,8 +198,10 @@ export const NavAndSort = styled.div`
   }
 `;
 
-
 export const ProductBox = styled.div`
+  .filter-mobile {
+    display: none;
+  }
   display: flex;
   margin: 50px 0px;
   div.filter {
@@ -301,11 +303,30 @@ export const ProductBox = styled.div`
   }
 
   @media screen and (max-width: 990px) {
+    display: block;
     div.filter {
       display: none;
     }
     .product-list .catalog {
       width: 100%;
       margin-left: 0px;
+  }
+  .filter-mobile {
+    display: block;
+    margin-bottom: 50px;
+    .list-box {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    }
+    #divider {
+      margin: 20px;
+    }
+    .header {
+      display: flex;
+      strong {
+        width: 90%
+      }
+    }
   }
 `;

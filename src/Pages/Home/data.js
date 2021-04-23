@@ -18,7 +18,7 @@ const products = [
     id: 1,
     name: "Red Bench",
     category: "pets",
-    price: 3.89,
+    price: 25,
     currency: "USD",
     image: {
       src:
