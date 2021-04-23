@@ -408,7 +408,6 @@ const Home = () => {
         cartItems={cartItems}
         showCart={showCart}
         cartBoxHandler={cartBoxHandler}
-        Photo={Photo}
       >
         <Wrapper>
           <TitleWrapper>
