@@ -6,7 +6,7 @@ A Photo Gallery App
 
 - Loom video: 
 
-https://www.loom.com/share/40959560743e4a2897767e7fb0c5319f
+https://www.loom.com/share/d9bcd121620d4aeda229954af8d64f3d
 
 ### Features
 
