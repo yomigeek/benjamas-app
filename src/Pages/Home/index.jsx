@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Photo from "../../assets/images/dog.png";
 import Pic1 from "../../assets/images/pic1.png";
 import Pic2 from "../../assets/images/pic2.png";
@@ -19,6 +19,7 @@ import BreadCrumb from "../../components/common/BreadCrumb";
 import SelectDropdown from "../../components/common/Select";
 import ProductCard from "../../components/common/ProductCard";
 import Container from "../../components/common/Container";
+import Pagination from "../../components/common/Pagination";
 import products from "./data";
 
 const Home = ({history}) => {
@@ -26,6 +27,11 @@ const Home = ({history}) => {
   const [checkedPriceList, setCheckedPriceList] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [showCart, setShowCart] = useState(false);
+  const [activePage, setActivePage] = useState(1);
+  const [productsInView, setProductsInView] = useState([]);
+  const [startFiltering, setStartFiltering] = useState(false);
+  const [emptyCatalog, setEmptyCatalog] = useState(false);
+  const [filteredCatalog, setFilteredCatalog] = useState([]);
   const photos = [
     {
       id: 1,
@@ -63,6 +69,7 @@ const Home = ({history}) => {
   ];
 
   const categoryCheckHandler = (name) => {
+    setStartFiltering(true);
     const currentList = [...checkedList];
     if (currentList.indexOf(name) >= 0) {
       const filteredCategory = currentList.filter((list) => list !== name);
@@ -71,13 +78,15 @@ const Home = ({history}) => {
       currentList.push(name);
       setCheckedList(currentList);
     }
+    console.log(checkedList);
   };
 
   const priceCheckHandler = (name) => {
-    const currentList = [...checkedPriceList];
+    setCheckedPriceList([]);
+    const currentList = [];
     if (currentList.indexOf(name) >= 0) {
-      const filteredCategory = currentList.filter((list) => list !== name);
-      setCheckedPriceList(filteredCategory);
+      const filteredPrice = currentList.filter((list) => list !== name);
+      setCheckedPriceList(filteredPrice);
     } else {
       currentList.push(name);
       setCheckedPriceList(currentList);
@@ -101,40 +110,118 @@ const Home = ({history}) => {
     }
   };
 
-  const addToCart = () => {
-    setCartItems([
-      {
-        id: 1,
-        name: "Samurai",
-        pic: "",
-      },
-    ]);
+  const addToCart = (itemId) => {
+    const currentCart = [...cartItems];
+    const newItem = products.filter((item) => item.id === itemId);
+    currentCart.push(newItem[0]);
+    setCartItems(currentCart);
     setShowCart(true);
   };
 
   const cartBoxHandler = (type) => {
-    console.log(type, 'hhhh')
     if (type === "close") {
       setShowCart(false);
     }
     if (type === "open") {
       setShowCart(true);
     }
+    if (type === "clear") {
+      setCartItems([]);
+      setShowCart(false);
+    }
   };
 
+  useEffect(() => {
+    console.log('triggers')
+    setProductsInView([]);
 
+    if (!startFiltering) {
+      let rowArray = [];
+      const start = (activePage - 1) * 6;
+      const end = start + 5;
+      for (let i = start; i <= end; i++) {
+        if (products[i]) {
+          console.log("mmmm0");
+
+          rowArray.push(products[i]);
+        }
+      }
+      setProductsInView(rowArray);
+    } 
+    
+    if(startFiltering) {
+      let rowArray = [];
+      const start = (activePage - 1) * 6;
+      const end = start + 5;
+      for (let i = start; i <= end; i++) {
+        if (filteredCatalog[i]) {
+          console.log("mmmm1");
+          rowArray.push(filteredCatalog[i]);
+        }
+      }
+      setProductsInView(rowArray);
+      console.log(rowArray, "ra");
+    }
+    // console.log(rowArray, "ra");
+  }, [activePage, startFiltering, checkedList.length, filteredCatalog]);
+
+  useEffect(() => {
+    setEmptyCatalog(false);
+    if (checkedList.length > 0) {
+      filterCatalog();
+    } else {
+      setStartFiltering(false);
+    }
+  }, [checkedList]);
+
+  const goToPage = (pageId) => {
+    setActivePage(pageId);
+  };
+
+  const filterCatalog = () => {
+    console.log("m here");
+    const category = checkedList;
+    const allFilter = [];
+    const filterCatalog = [];
+    console.log(category, 'ccgg')
+    category.forEach((cat) => {
+      const findProduct = products.filter((item) =>
+        item.category === cat
+      );
+      allFilter.push(findProduct);
+    });
+    // console.log(allFilter, 'afff')
+    for (let i = 0; i <= category.length - 1; i++) {
+      if (allFilter[i]?.length > 0) {
+
+        for (let j = 0; j <= allFilter[i].length - 1; j++) {
+          filterCatalog.push(allFilter[i][j]);
+        }
+      }
+    }
+    console.log(filterCatalog, 'mmm9')
+
+    if (startFiltering && filterCatalog.length < 1) {
+      setFilteredCatalog([]);
+      setEmptyCatalog(true);
+    }
+    if (startFiltering && filterCatalog.length > 0) {
+      setFilteredCatalog(filterCatalog);
+    }
+  };
   return (
     <>
       <Container
         cartItems={cartItems}
         showCart={showCart}
         cartBoxHandler={cartBoxHandler}
+        Photo={Photo}
       >
         <Wrapper>
           <TitleWrapper>
             <div className="title">Samurai King Resting</div>
             <div className="add-cart">
-              <Button text="ADD TO CART" clickAction={addToCart} />
+              <Button text="ADD TO CART" clickAction={() => addToCart(0)} />
             </div>
           </TitleWrapper>
           <MainPhotoHolder>
@@ -143,7 +230,7 @@ const Home = ({history}) => {
             </div>
             <div className="flag">Photo of the day</div>
             <div className="button-holder">
-              <Button text="ADD TO CART" clickAction={addToCart} />
+              <Button text="ADD TO CART" clickAction={() => addToCart(0)} />
             </div>
           </MainPhotoHolder>
 
@@ -251,15 +338,31 @@ const Home = ({history}) => {
               </div>
             </div>
             <div className="product-list">
-              {products.map((item, index) => {
-                return (
-                  <ProductCard
-                    imgUrl={item.image.src}
-                    name={item.name}
-                    bestSeller={item.bestseller}
+              {emptyCatalog && <div>No match found!</div>}
+              <div className="catalog">
+                {productsInView.map((item, index) => {
+                  return (
+                    <ProductCard
+                      imgUrl={item.image.src}
+                      name={item.name}
+                      bestSeller={item.bestseller}
+                      addToCart={addToCart}
+                      category={item.category}
+                      price={item.price}
+                      id={item.id}
+                    />
+                  );
+                })}
+              </div>
+              {!emptyCatalog && (
+                <div className="pagination">
+                  <Pagination
+                    products={!startFiltering ? products : productsInView}
+                    activePage={activePage}
+                    goToPage={goToPage}
                   />
-                );
-              })}
+                </div>
+              )}
             </div>
           </ProductBox>
         </Wrapper>

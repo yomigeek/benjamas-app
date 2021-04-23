@@ -114,7 +114,7 @@ export const Wrapper = styled.div`
   }
   @media screen and (max-width: 480px) {
     #divider {
-      margin: 50px -10%;
+      margin: 50px -7.9%;
     }
     margin: 15px 2% 40px;
   }
@@ -181,7 +181,7 @@ export const NavAndSort = styled.div`
       }
     }
   }
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 990px) {
     .sort-desktop {
       display: none;
     }
@@ -203,18 +203,26 @@ export const ProductBox = styled.div`
   display: flex;
   margin: 50px 0px;
   div.filter {
-    width: 25%
+    width: 25%;
   }
   .product-list {
-    width: 70%;
     display: flex;
-    flex-direction: row;
-    margin-left: 100px;
-    flex-wrap: wrap;
-    // #card {
-    //   width: 30%;
-    // }
+    flex-direction: column;
+    width: 100%;
+
+    .catalog {
+      display: flex;
+      flex-direction: row;
+      margin-left: 100px;
+      flex-wrap: wrap;
+      width: 100%;
+      height: 100%;
+    }
+    .pagination {
+      width: 100%;
+    }
   }
+
   #divider {
     width: 65%;
     border: 0.5px solid #E4E4E4;
@@ -290,5 +298,14 @@ export const ProductBox = styled.div`
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+  }
+
+  @media screen and (max-width: 990px) {
+    div.filter {
+      display: none;
+    }
+    .product-list .catalog {
+      width: 100%;
+      margin-left: 0px;
   }
 `;

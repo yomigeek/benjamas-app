@@ -6,7 +6,6 @@ export const Card = styled.div`
   height: fit-content;
   margin: 0px 0px 50px 20px;
   cursor: pointer;
-  width: 30%;
   .category {
     font-style: normal;
     font-weight: bold;
@@ -39,7 +38,6 @@ export const Card = styled.div`
     }
     display: inline;
     margin-bottom: -32px;
-
   }
   .best-seller {
     position: relative;
@@ -50,5 +48,17 @@ export const Card = styled.div`
     font-size: 13px;
     bottom: 5px;
     margin-bottom: -32px;
+  }
+
+  img {
+    width: 300px;
+  }
+
+  @media screen and (max-width: 780px) {
+    width: 100%;
+    margin: 0px 0px 20px 00px;
+    img {
+      width: 100%;
+    }
   }
 `;
